@@ -1,4 +1,3 @@
-const axios = require('axios')
 // *** Week 1 Node.js Backend Course ***//
 // Problem #1: What should the following evaluations return?
 // console.log(2 == '2' ) // true
@@ -206,17 +205,20 @@ const axios = require('axios')
 // such as shown below:
 // § [“Rick Sanchez”, “Morty Smith”, “Tom Jones”, .... ]
 // o Hint: What array methods can you use to get the result above??
-const api1Call = async () => {
-    try {
-        const response = await axios.get('https://rickandmortyapi.com/api/character');
-        const characters = response.data.results;
-        const names = characters.map(character => character.name);
-        console.log(names);
-    } catch (error){
-        console.log('Error calling API:', error);
-    }
-}
+
+
+// const api1Call = async () => {
+//     try {
+//         const response = await(await fetch('https://rickandmortyapi.com/api/character')).json();
+//         const { results } = response
+//         const names = results.map(char => char.name)
+//         console.log(names)
+//     } catch (error){
+//         console.log('Error calling API:', error);
+//     }
+// }
 // api1Call();
+
 
 // - fetchMultipleAPIs
 // o Using these apis:
@@ -230,25 +232,35 @@ const api1Call = async () => {
 // § The first value “Morty Smith” should be coming from API 1.
 // § The second value “Tony Kim” should be coming from API 2. Keep in mind, this second
 // API will have a new random user each time you call it!
-const api1URL = 'https://rickandmortyapi.com/api/character/2';
-const api2URL = 'https://randomuser.me/api/?results=1';
 
-const twoApiCalls = async (api1URL, api2URL) => {
-    return Promise.all([
-        axios.get(api1URL),
-        axios.get(api2URL)
-    ])
-    .then(response => {
-        const [api1data, api2data] = response.map(res => res.json())
 
-        return Promise.all([api1data, api2data])
-    })
-    .catch(error => {
-        console.log(error);
-        // throw new Error('Error fetching data from the APIs')
-    });
-}
-twoApiCalls();
+// const api1URL = 'https://rickandmortyapi.com/api/character/2';
+// const api2URL = 'https://randomuser.me/api/?results=1';
+
+// const twoApiCalls = async () => {
+//     try {
+//         const [result1, result2] = await Promise.all([
+//                 fetch(api1URL),
+//                 fetch(api2URL)
+//         ])
+//         const [rickandmortyapi , randomuser] = await Promise.all([
+//                 result1.json(),
+//                 result2.json()
+//         ])
+//         // const { name } = rickandmortyapi;
+//         const { results } =  await randomuser;
+        
+//         // console.log(results[0].name.first, results[0].name.last)
+       
+//         console.log([`${results[0].name.first} ${results[0].name.last}`, rickandmortyapi.name ])
+//     }
+//     catch(error) {
+//         console.log(error);
+//         // throw new Error('Error fetching data from the APIs')
+//     };
+// }
+// twoApiCalls();
+
 
 // Problem #16: OOP
 // In this task create a Shape class. It has three properties: name, sides, and sideLength. This class only models
@@ -258,9 +270,33 @@ twoApiCalls();
 // • Create a new instance of the Shape class called square. Give it a name of square, 4 sides, and a sideLength of 5.
 // • Call your calcPerimeter() method on the instance, to see whether it logs the calculation result to the browser's console as expected.
 // • Create a new instance of Shape called triangle, with a name of triangle, 3 sides and a sideLength of 3.
-
+// Shape:{
+//         name
+//         sides
+//         sideLength 
+// }
 // • Call triangle.calcPerimeter() to check that it works OK.
 
+class Shape {
+        constructor(name, sides, sideLength){
+                this.name = name;
+                this.sides = sides;
+                this.sideLength = sideLength;
+        }
+        calcPerimeter(){
+                // perimeter = length of outside. (sideLength x #of sides)?
+                console.log(this.sides * this.sideLength)
+                return this.sides * this.sideLength
+        }
+}
+        const square = new Shape('square', 4, 5 );
+        console.log(square)
+        square.calcPerimeter();
+
+        const triangle = new Shape('triangle', 3, 3);
+        console.log(triangle);
+        triangle.calcPerimeter();
+        
 // Problem #17: OOP (Part 2)
 // Next we'd like you to create a Square class that inherits from Shape, and adds a calcArea() method that calculates the square's area. Also set up the constructor so that the name property of Square object instances is automatically set to square, and the sides property is automatically set to 4. When invoking the constructor, you should therefore just need to provide the sideLength property.
 // Create an instance of the Square class called square with appropriate property values, and call its calcPerimeter() and calcArea() methods to show that it works OK.
