@@ -8,6 +8,9 @@ const artist = require('./routes/artist');
 const song = require('./routes/song');
 const user = require('./routes/user');
 
+//other req. Middlewares
+const logger = require('./middlewares/logger');
+const errorHandler = require('./middlewares/error');
 // initialize express
 const app = express();
 
@@ -15,10 +18,12 @@ const app = express();
 dotenv.config({ path:'./config/config.env'});
 
 //use - body parser and routes
+app.use(logger);
 app.use(bodyParser.json());
 app.use('/artist', artist);
 app.use('/song', song);
 app.use('/user', user);
+app.use(errorHandler);
 
 //port & server listen to port
 const PORT = process.env.PORT || 5001 ;
