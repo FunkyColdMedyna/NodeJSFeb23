@@ -2,6 +2,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
+const ConnectDB = require('./config/db');
 
 //other requirements -> routes
 const artist = require('./routes/artist');
@@ -11,11 +12,15 @@ const user = require('./routes/user');
 //other req. Middlewares
 const logger = require('./middlewares/logger');
 const errorHandler = require('./middlewares/error');
-// initialize express
-const app = express();
 
 // dotenv for path and config files
 dotenv.config({ path:'./config/config.env'});
+//connect to DB
+ConnectDB();
+
+// initialize express
+const app = express();
+
 
 //use - body parser and routes
 app.use(logger);
@@ -31,3 +36,8 @@ const PORT = process.env.PORT || 5001 ;
 const server = app.listen(PORT, () => {
     console.log(`Server is listening to Port: ${PORT}`)
 });
+
+process.on('unhandledRejection', (err, promise) => {
+    console.log(`Error: ${err.message}`)
+    server.close(() => process.exit(1))
+})
