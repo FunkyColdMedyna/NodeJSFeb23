@@ -3,25 +3,25 @@ const Song = require('../models/Song');
 // getSongs
     const getSongs = async (req, res, next) => {
         //query param -> if there are any keys in the query 
+        const filter = {};
+        const options = {};
         if (Object.keys(req.query).length) {
             //destructure key-names looking for
             const {
+                limit,
+                sortByArtist,
                 songTitle,
                 artist,
-                genre
+                genre,
             } = req.query;
 
-            //instantiate filter array to hold queries
-            const filter = [];
+            if (songTitle) filter.songTitle = songTitle;
+            if (artist) filter.artist = artist;
+            if (genre) filter.genre = genre;
 
-            // if any of the keys exist in the req.query, push them into the filter array
-            if (songTitle) filter.push(songTitle)
-            if (artist) filter.push(artist)
-            if (genre) filter.push(genre)
-
-            //for each query element in the filter array console.log()
-            for (const query of filter ) {
-                console.log(`searching item by ${query}`)
+            if (limit) options.limit = limit; 
+            if (sortByArtist) options.sort = {
+                category: sortByArtist === 'asc' ? 1 : -1
             }
         }
         try {
@@ -99,11 +99,59 @@ const Song = require('../models/Song');
         }
     }
 
+//SongRatings
+    const getSongRatings = async (req, res, next) => {
+        try {
+            const song = await Song.findById(req.params.songId)
+            res
+            .status(200)
+            .setHeader('Content-Type', 'application/json')
+            .json(song.ratings)
+
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    const postSongRating = async (req, res, next) => {
+        try {
+            const song = await Song.findById(req.params.songId)
+            song.ratings.push(req.body)
+
+            const result = await song.save()
+
+            res
+            .status(201)
+            .setHeader('Content-Type', 'application/json')
+            .json(result)
+        } catch (err) {
+            next(err)
+        }
+    }
+
+    const deleteSongRatings = async ( req, res, next ) => {
+        try {
+            const song = await Song.findById(req.params.songId)
+            song.ratings = [];
+            await song.save()
+
+            res
+            .status(200)
+            .setHeader('Content-Type','application/json')
+            .json({msg: `song ratings were deleted for song with songId of ${song.songId}`})
+
+        } catch (err) {
+            next(err)
+        }
+    }
 module.exports = {
     getSongs,
     postSong,
     deleteSongs,
     getSong,
     updateSong,
-    deleteSong
+    deleteSong,
+    getSongRatings,
+    postSongRating,
+    deleteSongRatings
 };
